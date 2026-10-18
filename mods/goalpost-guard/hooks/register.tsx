@@ -1,5 +1,5 @@
 import { atom, read, update } from 'claude-code'
-import type { EngineInterface, Register } from 'claude-code'
+import type { EngineInterface, Register, RenderElement } from 'claude-code'
 
 import type {
   GoalpostCategory,
@@ -639,9 +639,11 @@ export const register: Register = (on, options) => {
     }
     const held = list.filter(entry => entry.decision === 'blocked').length
     const through = list.length - held
+    // What draws beneath (another plugin's band, or the engine's) keeps the rows the guard's one row leaves.
+    const below = await next({ ...e, props: { ...e.props, maxRows: Math.max(1, e.props.maxRows - 1) } })
     const { Box, Button, Text } = $.ui.resolve(e)
 
-    return (
+    const row = (
       <Box>
         <Text color={CLAY} bold>
           Goalpost Guard{' '}
@@ -650,6 +652,16 @@ export const register: Register = (on, options) => {
         {held > 0 && <Text color={CLAY}>{held} held </Text>}
         {through > 0 && <Text color={OLIVE}>{through} let through </Text>}
         <Button key="ledger" label="Ledger" onPress={() => $.ui.open({ id: PANE, title: 'Goalpost Guard', focus: true, closeOnEscape: true })} />
+      </Box>
+    )
+    if (isBlank(below)) {
+      return row
+    }
+
+    return (
+      <Box flexDirection="column">
+        {row}
+        {below}
       </Box>
     )
   })
@@ -793,4 +805,16 @@ export const register: Register = (on, options) => {
       </Box>
     )
   })
+}
+
+/** Whether the band beneath drew nothing: no tree, or a Box or Text holding no text and no control. */
+function isBlank(tree: RenderElement | null | undefined): boolean {
+  if (tree === null || tree === undefined) {
+    return true
+  }
+  if (tree.type !== 'Box' && tree.type !== 'Text') {
+    return false
+  }
+
+  return (tree.children ?? []).every(child => (typeof child === 'string' ? child === '' : typeof child === 'object' && child !== null && 'type' in child && isBlank(child as RenderElement)))
 }

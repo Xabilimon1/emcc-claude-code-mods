@@ -23,7 +23,7 @@
       "name": "goalpost-guard",
       "source": "./mods/goalpost-guard",
       "description": "Stops Claude from passing a check by lowering the bar: weakened or deleted tests, new suppressions, relaxed config, softened CI, lowered coverage, skipped git hooks.",
-      "version": "0.2.1",
+      "version": "0.2.2",
       "category": "development",
       "tags": [
         "emcc",
@@ -37,7 +37,7 @@
       "name": "witness",
       "source": "./mods/witness",
       "description": "A live view of Claude's work: the goal, a ribbon of its time, what it is doing now, and each step marked proven, unproven, stale or flagged.",
-      "version": "0.1.1",
+      "version": "0.1.2",
       "category": "development",
       "tags": [
         "emcc",

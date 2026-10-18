@@ -39,7 +39,7 @@ A step's edits are the ones made while it was in progress; with several in progr
 ## Where it shows
 
 - The pane opens by itself on Claude's first tool call. Claude Code places a pane opened that way only on a terminal 144 columns wide or more; on a narrower one it waits, and appears if the terminal widens.
-- While the pane is not on screen (a narrow terminal, or you closed it), the count stays above the prompt: in the EMCC band as `witness 2/4 proven, /live`, or, without emcc-core (or with its profile `off`), as its own line `witness 2/4 proven` with a **Live** button. Criteria count too, proven or ticked.
+- While the pane is not on screen (a narrow terminal, or you closed it), the count stays above the prompt: in the EMCC band as `witness 2/4 proven, /live`, or, without emcc-core (or with its profile `off`), as its own line `witness 2/4 proven` with a **Live** button, and what another mod draws there stays beneath it. Criteria count too, proven or ticked.
 - Closing the pane stops the pulse, and the badge or the line comes back.
 
 ## Install
@@ -74,4 +74,4 @@ witness needs [`emcc-core`](../emcc-core), which keeps the evidence it marks ste
 claude plugin test mods/witness
 ```
 
-116 tests: goal parsing (8), phases (14), marks (15), watching a session (45), and the pane, the band and the pulse on both terminal and desktop (34). Each one was seen failing before it passed.
+117 tests: goal parsing (8), phases (14), marks (15), watching a session (45), and the pane, the band and the pulse on both terminal and desktop (35). Each one was seen failing before it passed.

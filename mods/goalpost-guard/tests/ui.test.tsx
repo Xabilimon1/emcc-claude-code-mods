@@ -44,6 +44,25 @@ describe('the band', () => {
       await ui.unmount()
     }
   })
+
+  test('without emcc-core, what draws beneath keeps its place under the guard’s row', async ($, on) => {
+    const it = world(on)
+    // Another plugin's band (or the engine's), told how many rows it was given.
+    on('ui.render', ($, e) => {
+      const { Text } = $.ui.resolve(e)
+
+      return <Text>{`other band in ${(e.props as { maxRows: number }).maxRows} rows`}</Text>
+    })
+    it.answer = 'Block it'
+    await edit($)
+    for (const surface of SURFACES) {
+      const ui = await $.ui.mount({ plugin: 'goalpost-guard', surface, ...BAND } as never)
+      expect((await ui.find({ type: 'Text', text: /held/ }))?.text).toBe('1 held ')
+      // The guard takes one of the three rows; the band beneath keeps the other two.
+      expect((await ui.find({ type: 'Text', text: /other band/ }))?.text).toBe('other band in 2 rows')
+      await ui.unmount()
+    }
+  })
 })
 
 describe('the pane', () => {

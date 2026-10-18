@@ -71,7 +71,7 @@ In `claude -p` and other runs with no screen, nobody can answer the dialog, so `
 - **Exceptions**: the standing ones for this project, each with **Revoke**.
 - **Rules**: each family on or off. **Mute** turns one off for this session; `/config` turns it off for good (a family off there shows `/config` instead of the button).
 
-**Pause** turns goalpost-guard off for the session, like `/goalposts pause` (`/goalposts resume` brings it back). Without emcc-core, a line above the prompt counts what was held and let through, with a **Ledger** button.
+**Pause** turns goalpost-guard off for the session, like `/goalposts pause` (`/goalposts resume` brings it back). Without emcc-core, a line above the prompt counts what was held and let through, with a **Ledger** button; what another mod draws there stays beneath it.
 
 ## Commit trailers
 
@@ -119,4 +119,4 @@ Set them in `/config`, or at install with `--config key=value`.
 claude plugin test mods/goalpost-guard
 ```
 
-81 tests: the detectors (37), the gate, modes, options, exceptions, retargeted imports, trailers and audit (30), and the band and the pane on both terminal and desktop, plus the EMCC profile, badge and flags (14). Each one was seen failing before it passed, by breaking the code it checks.
+92 tests: the detectors (37), the gate, modes, options, exceptions, retargeted imports, trailers and audit (40), and the band and the pane on both terminal and desktop, plus the EMCC profile, badge and flags (15). Each one was seen failing before it passed, by breaking the code it checks.

@@ -304,7 +304,8 @@ describe('when the pane is not placed', () => {
       const ui = await band($, surface)
       expect((await ui.find({ type: 'Text', text: /proven/ }))?.text).toBe('0/1 proven ')
       expect((await ui.find({ key: 'live' }))?.text).toBe('Live')
-      expect(await ui.find({ type: 'Text', text: /engine band/ })).toBeUndefined()
+      // What draws beneath keeps its place under witness’s row.
+      expect(await ui.find({ type: 'Text', text: /engine band/ })).toBeDefined()
       await ui.unmount()
     }
     // A press is the person asking: the engine places the pane at any width (here, the band drawn narrow, then wide).
@@ -318,6 +319,23 @@ describe('when the pane is not placed', () => {
     const after = await band($)
     expect(await after.find({ type: 'Text', text: /engine band/ })).toBeDefined()
     await after.unmount()
+  })
+
+  test('what draws beneath keeps the rows witness’s one row leaves', WITH_PROBE, async ($, on) => {
+    const it = session(on)
+    on('ui.render', ($, e) => {
+      const { Text } = $.ui.resolve(e)
+
+      return <Text>{`other band in ${(e.props as { maxRows: number }).maxRows} rows`}</Text>
+    })
+    it.isWide = false
+    await call($, it, { tool: 'TaskCreate', subject: 'Fix withTax', description: 'x' })
+    for (const surface of SURFACES) {
+      const ui = await band($, surface)
+      expect((await ui.find({ type: 'Text', text: /proven/ }))?.text).toBe('0/1 proven ')
+      expect((await ui.find({ type: 'Text', text: /other band/ }))?.text).toBe('other band in 2 rows')
+      await ui.unmount()
+    }
   })
 
   test('a survey keeps the band', WITH_PROBE, async ($, on) => {

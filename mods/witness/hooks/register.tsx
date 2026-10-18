@@ -1,5 +1,5 @@
 import { atom, read, update } from 'claude-code'
-import type { EngineInterface, Register, Timer } from 'claude-code'
+import type { EngineInterface, Register, RenderElement, Timer } from 'claude-code'
 
 import type { WitnessCriterion, WitnessPhase, WitnessSegment, WitnessStep } from '../types'
 import { collapsed, goalFromPrompt, parseGoal } from './goal'
@@ -924,10 +924,12 @@ export const register: Register = on => {
     if (e.props.hasSurvey || !(await read($, hasOpened)) || (await isPanePlaced($)) || (await emccDrawsBand($))) {
       return next(e)
     }
-    const { Box, Button, Text } = $.ui.resolve(e)
     const counted = await provenCount($)
+    // What draws beneath (another plugin's band, or the engine's) keeps the rows witness's one row leaves.
+    const below = await next({ ...e, props: { ...e.props, maxRows: Math.max(1, e.props.maxRows - 1) } })
+    const { Box, Button, Text } = $.ui.resolve(e)
 
-    return (
+    const row = (
       <Box>
         <Text color={CLAY} bold>
           witness{' '}
@@ -938,5 +940,27 @@ export const register: Register = on => {
         <Button key="live" label="Live" onPress={() => press($, async () => void (await showPane($, 'ui.press')))} />
       </Box>
     )
+    if (isBlank(below)) {
+      return row
+    }
+
+    return (
+      <Box flexDirection="column">
+        {row}
+        {below}
+      </Box>
+    )
   })
+}
+
+/** Whether the band beneath drew nothing: no tree, or a Box or Text holding no text and no control. */
+function isBlank(tree: RenderElement | null | undefined): boolean {
+  if (tree === null || tree === undefined) {
+    return true
+  }
+  if (tree.type !== 'Box' && tree.type !== 'Text') {
+    return false
+  }
+
+  return (tree.children ?? []).every(child => (typeof child === 'string' ? child === '' : typeof child === 'object' && child !== null && 'type' in child && isBlank(child as RenderElement)))
 }
